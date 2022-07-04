@@ -48,7 +48,6 @@ public class ProductManagerTest {
         manager.addNewProducts(item2);
         manager.addNewProducts(item3);
         manager.addNewProducts(item4);
-        manager.searchBy("Инферно");
 
         Product[] expected = {item3};
         Product[] actual = manager.searchBy("Инферно");
@@ -72,14 +71,50 @@ public class ProductManagerTest {
     }
 
     @Test
-    public void shouldSearchItemBookByNameIfItemEmpty() {    // Поиск товара (книги) в корзине по наименованию (товара нет в корзине)
-        manager.addNewProducts(item1);
-        manager.addNewProducts(item2);
-        manager.addNewProducts(item3);
-        manager.searchBy("Утраченный символ");
+    public void shouldSearchItemByNameIfItemEmpty() {    // Поиск товара в корзине по наименованию (товара нет в корзине)
 
         Product[] expected = {};
         Product[] actual = manager.searchBy("Утраченный символ");
+
+        Assertions.assertArrayEquals(expected, actual);
     }
+
+    @Test
+    public void shouldSearchItemNameIfItem1() {            // Поиск товара которого нет в корзине (в корзине один товар)
+
+        manager.addNewProducts(item1);
+
+        Product[] expected = {};
+        Product[] actual = manager.searchBy("Утраченный символ");
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+    @Test
+    public void shouldSearchItemNameIfItem3() {            // Поиск товара которого нет в корзине (в корзине несколько товаров)
+
+        manager.addNewProducts(item1);
+        manager.addNewProducts(item2);
+        manager.addNewProducts(item3);
+
+        Product[] expected = {};
+        Product[] actual = manager.searchBy("Утраченный символ");
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldSearchItemNameIfSeveral() {           // Поиск нескольких одинаковых товаров в корзине
+
+        manager.addNewProducts(item1);
+        manager.addNewProducts(item2);
+        manager.addNewProducts(item3);
+        manager.addNewProducts(item1);
+
+        Product[] expected = {item1, item1};
+        Product[] actual = manager.searchBy("Код Да Винчи");
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
 }
 

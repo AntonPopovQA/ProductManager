@@ -22,13 +22,15 @@ public class ProductManager {
     }
 
     public Product[] searchBy(String text) {
-        Product[] result = new Product[1];
+        Product[] result = new Product[0];
         for (Product product : repository.getAddProducts()) {
             if (matches(product, text)) {
-                result[0] = product;
-                return result;
-            } else {
-                result[0] = null;
+                Product[] tmp = new Product[result.length + 1];
+                for (int i = 0; i < result.length; i++) {
+                    tmp[i] = result[i];
+                }
+                tmp[tmp.length - 1] = product;
+                result = tmp;
             }
         }
         return result;
