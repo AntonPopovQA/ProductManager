@@ -2,6 +2,8 @@ package ru.netology.product;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.netology.repository.AlreadyExistsException;
+import ru.netology.repository.NotFoundException;
 import ru.netology.repository.ProductManager;
 import ru.netology.repository.ProductRepository;
 
@@ -89,6 +91,7 @@ public class ProductManagerTest {
 
         Assertions.assertArrayEquals(expected, actual);
     }
+
     @Test
     public void shouldSearchItemNameIfItem3() {            // Поиск товара которого нет в корзине (в корзине несколько товаров)
 
@@ -115,6 +118,29 @@ public class ProductManagerTest {
 
         Assertions.assertArrayEquals(expected, actual);
     }
+  // Тестирование репозитория (исключения)
+    @Test
+    public void shouldRemoveProductsByIdIfNotFoundException() {
+        manager.addNewProducts(item1);
+        manager.addNewProducts(item2);
+        manager.addNewProducts(item3);
+        manager.addNewProducts(item4);
 
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            manager.removeProductsById(4);
+        });
+    }
+
+    @Test
+    public void shouldAddProductsIfAlreadyExistsException() {
+        manager.addNewProducts(item1);
+        manager.addNewProducts(item2);
+        manager.addNewProducts(item3);
+        manager.addNewProducts(item4);
+
+        Assertions.assertThrows(AlreadyExistsException.class, () -> {
+            manager.addNewProducts(item2);
+        });
+    }
 }
 
