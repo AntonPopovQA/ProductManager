@@ -2,7 +2,6 @@ package ru.netology.product;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ru.netology.repository.AlreadyExistsException;
 import ru.netology.repository.NotFoundException;
 import ru.netology.repository.ProductManager;
 import ru.netology.repository.ProductRepository;
@@ -112,34 +111,24 @@ public class ProductManagerTest {
         manager.addNewProducts(item2);
         manager.addNewProducts(item3);
         manager.addNewProducts(item1);
+        manager.searchBy("Код Да Винчи");
 
         Product[] expected = {item1, item1};
         Product[] actual = manager.searchBy("Код Да Винчи");
 
         Assertions.assertArrayEquals(expected, actual);
     }
-  // Тестирование репозитория (исключения)
+
+    // Исключение
     @Test
-    public void shouldRemoveProductsByIdIfNotFoundException() {
+    public void shouldRemoveProductsByIdIfNotFoundException() {           // Попытка удаления несуществующего элемента
         manager.addNewProducts(item1);
         manager.addNewProducts(item2);
         manager.addNewProducts(item3);
         manager.addNewProducts(item4);
 
         Assertions.assertThrows(NotFoundException.class, () -> {
-            manager.removeProductsById(4);
-        });
-    }
-
-    @Test
-    public void shouldAddProductsIfAlreadyExistsException() {
-        manager.addNewProducts(item1);
-        manager.addNewProducts(item2);
-        manager.addNewProducts(item3);
-        manager.addNewProducts(item4);
-
-        Assertions.assertThrows(AlreadyExistsException.class, () -> {
-            manager.addNewProducts(item2);
+            manager.removeProductsById(5);
         });
     }
 }
