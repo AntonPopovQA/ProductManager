@@ -2,6 +2,7 @@ package ru.netology.product;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.netology.repository.AlreadyExistsException;
 import ru.netology.repository.NotFoundException;
 import ru.netology.repository.ProductManager;
 import ru.netology.repository.ProductRepository;
@@ -10,7 +11,7 @@ public class ProductManagerTest {
     ProductManager manager = new ProductManager(new ProductRepository());
     Product item1 = new Product(10, "Код Да Винчи", 1_000);
     Product item2 = new Product(11, "Ангелы и Демоны", 1_100);
-    Product item3 = new Product(12, "Инферно", 1_200);
+    Product item3 = new Product(12, "Ангелы и Инферно", 1_200);
     Product item4 = new Product(13, "Xiaomi", 10_000);
 
     @Test
@@ -105,23 +106,22 @@ public class ProductManagerTest {
     }
 
     @Test
-    public void shouldSearchItemNameIfSeveral() {           // Поиск нескольких одинаковых товаров в корзине
+    public void shouldSearchItemSeveralNameIfItem() {            // Поиск товара в котором имеются одинаковые слова
 
         manager.addNewProducts(item1);
         manager.addNewProducts(item2);
         manager.addNewProducts(item3);
-        manager.addNewProducts(item1);
-        manager.searchBy("Код Да Винчи");
+        manager.addNewProducts(item4);
 
-        Product[] expected = {item1, item1};
-        Product[] actual = manager.searchBy("Код Да Винчи");
+        Product[] expected = {item2,item3 };
+        Product[] actual = manager.searchBy("Ангелы");
 
         Assertions.assertArrayEquals(expected, actual);
     }
 
-    // Исключение
+    // Исключения
     @Test
-    public void shouldRemoveProductsByIdIfNotFoundException() {           // Попытка удаления несуществующего элемента
+    public void shouldRemoveProductsByIdIfNotFoundException() {
         manager.addNewProducts(item1);
         manager.addNewProducts(item2);
         manager.addNewProducts(item3);
@@ -129,6 +129,16 @@ public class ProductManagerTest {
 
         Assertions.assertThrows(NotFoundException.class, () -> {
             manager.removeProductsById(5);
+        });
+    }
+    @Test
+    public void shouldAddNewProductsWhenProductAlreadyExists() {
+        manager.addNewProducts(item1);
+        manager.addNewProducts(item2);
+        manager.addNewProducts(item4);
+
+        Assertions.assertThrows(AlreadyExistsException.class, () -> {
+            manager.addNewProducts(item1);
         });
     }
 }
